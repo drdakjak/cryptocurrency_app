@@ -106,7 +106,7 @@ class Calls(object):
     def get_pubticker(self,symbol):
         
         r = requests.get('https://api.bitfinex.com/v1'+'/pubticker/'+ symbol)
-        print('https://api.bitfinex.com/v1/pubticker/'+ symbol)
+        
         return r.json()
         
   

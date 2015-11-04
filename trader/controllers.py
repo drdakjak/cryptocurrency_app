@@ -28,34 +28,34 @@ class Trader(object):
         if(broker=='bitfinex'):
             self.broker = bf.Calls()
 
-        self.trades = {}
+        self.orders = {}
         self.order_id = 0
         self.pubticker = Pubticker()
  
     def buy(self):
-        self.trades[self.order_id] = "BUY"+datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.orders[self.order_id] = "BUY "+datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.order_id += 1
         # bf->self.broker
         # Trader -> self
         # response, payload = bf.Calls.buy(0,0)
         # order = bf.Order("Open", response['order_id'], "btcusd", payload['amount'], payload['price'], payload['exchange'], payload['side'], payload['trade_type'], payload['is_hidden'])
-        # Trader.trades[response['order_id']] = order.__dict__
+        # Trader.orders[response['order_id']] = order.__dict__
         # TODO ulozeni obchodu do databaze
         pass
     
 
     def sell(self):
-        self.trades[self.order_id] = "SELL"+datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.orders[self.order_id] = "SELL "+datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.order_id += 1
         # response, payload = bf.Calls.sell(0,0)
         # order = bf.Order("Open", response['order_id'], "btcusd", payload['amount'], payload['price'], payload['exchange'], payload['side'], payload['trade_type'], payload['is_hidden'])
-        # Trader.trades[response['order_id']] = order.__dict__
+        # Trader.orders[response['order_id']] = order.__dict__
         # TODO ulozeni obchodu do databaze 
         pass
     
   
     def close(self,order_id):
-        del self.trades[int(order_id)]
+        del self.orders[int(order_id)]
         # payload_object = {
         #     'request': '/order/cancel',
         #     'order_id': order_id
@@ -68,7 +68,7 @@ class Trader(object):
         # }
         # r = bf.call(payload_object)
         # if(r['is_cancelled']):
-        #     del Trader.trades[order_id]
+        #     del Trader.orders[order_id]
         # # TODO zmena obchodu v databazi
         
     

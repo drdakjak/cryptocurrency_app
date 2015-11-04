@@ -1,5 +1,6 @@
 import time
-class Manager(object):
+
+class TestManager(object):
     
     @staticmethod
     def init(trader):
