@@ -21,8 +21,8 @@ class PeriodicTask(object):
     stop = False
     
     
-    sem_event_ready = threading.Semaphore(1)
-    sem_sleeper_ready = threading.Semaphore(0)
+    sem_event_ready = threading.Semaphore(0)
+    sem_period_ready = threading.Semaphore(0)
     
 
     def __init__ (self, symbol, period, broker):
@@ -51,21 +51,28 @@ class PeriodicTask(object):
     
     def period_worker(self,symbol,period):
         while not self.stop:
-            self.sem_sleeper_ready.release()
-            self.sem_event_ready.acquire()
+            self.sem_period_ready.acquire()
+            self.sem_event_ready.release()
             
             time.sleep(period)
             
+        
+        print("Thread PERIOD-WORKER END")
+            
             
     def event_worker(self,symbol,period):
-         while not self.stop:
+        Manager.init(self.trader)
+        while not self.stop:
             print ("--------------------------EVENT "+str(period)+ " --------------------------")
-            self.sem_sleeper_ready.acquire()
-            self.sem_event_ready.release()
+            self.sem_period_ready.release()
+            self.sem_event_ready.acquire()
             
             self.trader.pubticker = self.trader.get_pubticker(symbol)
             Manager.event(self.trader)
-
+        
+        self.sem_period_ready.release()
+        print("Thred EVENT-WORKER END")
+        Manager.deinit(self.trader)
         
     def stop_threads(self):
         self.stop = True

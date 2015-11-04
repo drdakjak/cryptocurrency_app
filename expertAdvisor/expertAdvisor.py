@@ -1,13 +1,16 @@
 class Manager(object):
     
     @staticmethod
-    def init():
-        pass
+    def init(trader):
+        trader.test = 1
+        
     @staticmethod
     def event(trader):
-        # trader.buy()
-        pass
+        print (trader.test)
+        trader.test += 1
+        
   
     @staticmethod
-    def deinit(*args):
-        pass
+    def deinit(trader):
+        print("deinit: ",trader.test)
+        
