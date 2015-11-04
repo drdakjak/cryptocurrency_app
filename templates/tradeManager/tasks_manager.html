@@ -1,0 +1,20 @@
+<form action="{% url 'manager:new_task' %}" method="post">
+            {% csrf_token %}
+            {{ form }}
+        <input type="submit" value="Nová úloha" />
+</form>
+
+{% for key, task in tasks.items %}
+        <li> ID:{{key}} </li>
+        <li> Symbol:{{ task.symbol }}</li> 
+        <li> Perioda:{{task.period}} </li>
+        
+        <form action="{% url 'manager:stop_threads' task.task_id %}" method="post">
+            {% csrf_token %}
+        <input type="submit" value="Ukonči úlohu" />
+        </form>
+         <form action="{% url 'manager:trade_manager' task.task_id %}" method="post">
+            {% csrf_token %}
+        <input type="submit" value="Přejít" />
+        </form>
+{% endfor %}

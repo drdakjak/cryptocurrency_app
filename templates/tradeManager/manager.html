@@ -1,0 +1,198 @@
+
+<h1>Současná úloha: {{ task_id }}</h1>
+
+<h2><a href='{% url 'manager:manager' %}'>Seznam úloh</a></h2>
+{% for key, task in tasks.items %}
+        <li> <h3>{{key}} {{ task.symbol }} {{task.period}}</h3>
+        <form action="{% url 'manager:stop_threads' task.task_id %}" method="post">
+            {% csrf_token %}
+        <input type="submit" value="Ukončit úlohu" />
+        </form>
+         <form action="{% url 'manager:trade_manager' task.task_id %}" method="post">
+            {% csrf_token %}
+        <input type="submit" value="Přejít" />
+        </form>
+
+        </li>
+{% endfor %}
+
+
+
+<!--GRAF-->
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+</style>
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+
+<script>
+
+ $.ajax({
+        type: "GET",
+        url: "/manager/pubticker_history/",
+          success: function(data){
+                 draw_chart(data);
+                //  alert(data)
+               }
+        });
+    var period = '{{ period }}'*1000
+    console.log(period)
+ setInterval(function(){  
+        $.ajax({
+            type: "GET",
+            url: "/manager/pubticker_history/",
+           success: function(data){
+            //   alert(data)
+                  update_data(data);
+
+             }
+        });
+    }, period);
+    
+
+
+
+
+
+var margin = {top: 20, right: 20, bottom: 30, left: 50},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var parseDate = d3.time.format("%X").parse;
+
+var x = d3.time.scale()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var valueline = d3.svg.line()
+    .x(function(d) { return x(d.fields.import_date); })
+    .y(function(d) { return y(d.fields.mid); });
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    
+function draw_chart(data_json){
+    
+    var data = JSON.parse(data_json);
+    
+    console.log("DRAW CHART");
+    data.forEach(function(d) {
+        d.fields.import_date = parseDate((new Date(d.fields.import_date)).toLocaleTimeString().replace(/ [A-Z]*/, ""));
+        d.fields.mid = +d.fields.mid;
+        
+        console.log((new Date(d.fields.import_date)).toLocaleTimeString().replace(/ [A-Z]*/, ""))
+        console.log(d.fields.mid)
+    });
+
+  x.domain(d3.extent(data, function(d) { return d.fields.import_date; }));
+  y.domain(d3.extent(data, function(d) { return d.fields.mid; }));
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Price ($)");
+
+  svg.append("path")
+      .datum(data)
+      .attr("class", "line")
+    .attr("d", valueline);
+
+}
+
+// ** Update data section (Called from the onclick)
+function update_data(data_json) {
+
+    // Get the data again
+    var data = JSON.parse(data_json);
+    
+    console.log("UPDATE")
+      data.forEach(function(d) {
+            d.fields.import_date = parseDate((new Date(d.fields.import_date)).toLocaleTimeString().replace(/ [A-Z]*/, ""));
+            d.fields.mid = +d.fields.mid;
+            
+            console.log((new Date(d.fields.import_date)).toLocaleTimeString().replace(/ [A-Z]*/, ""))
+            console.log(d.fields.mid)
+      });
+    
+        	// Scale the range of the data again 
+        x.domain(d3.extent(data, function(d) { return d.fields.import_date; }));
+        y.domain(d3.extent(data, function(d) { return d.fields.mid; }));
+    
+        // Select the section we want to apply our changes to
+        var svg = d3.select("body").transition();
+    
+        // Make the changes
+            svg.select(".line")   // change the line
+                .duration(750)
+                .attr("d", valueline(data));
+            svg.select(".x.axis") // change the x axis
+                .duration(750)
+                .call(xAxis);
+            svg.select(".y.axis") // change the y axis
+                .duration(750)
+                .call(yAxis);
+}
+</script>
+
+<form action="{% url 'manager:buy' task_id %}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Nákup" />
+</form>
+
+<form action="{% url 'manager:sell' task_id %}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Prodej" />
+</form>
+
+{% for key, trade in trades.items %}
+             <li>{{ trade }}<form action="{% url 'manager:close' task_id key %}" method="post">{% csrf_token %}<input type="submit" value="Zavřít" /></form></li>
+{% endfor %}
