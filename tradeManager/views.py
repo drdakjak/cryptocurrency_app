@@ -45,7 +45,7 @@ def trade_manager(request,task_id):
     _trader = _task.trader
 
     context = { 'pubticker': _trader.pubticker,
-                'trades' : _trader.trades,
+                'orders' : _trader.orders,
                 'period':_task.period,
                 'tasks': Tasks.tasks,
                 'task_id': task_id,
@@ -62,7 +62,7 @@ def stop_threads(request, task_id):
     del Tasks.tasks[int(task_id)]
     
     context = {'pubticker': "kill",
-                'trades' : "kill",
+                'orders' : "kill",
                 'tasks': Tasks.tasks,
                 'form': TaskForm(),
             }
@@ -101,7 +101,7 @@ def buy(request,task_id):
     _trader.buy()
     context = {
         'pubticker':_trader.pubticker,
-        'trades' : _trader.trades,
+        'orders' : _trader.orders,
         'tasks': Tasks.tasks,
         'period':_task.period,
         'task_id': task_id,
@@ -114,7 +114,7 @@ def sell(request,task_id):
     _trader.sell()
     context = {
         'pubticker':_trader.pubticker,
-        'trades' : _trader.trades,
+        'orders' : _trader.orders,
         'tasks': Tasks.tasks,
         'period':_task.period,
         'task_id': task_id,
@@ -128,7 +128,7 @@ def close(request,task_id,trade_id):
     _trader.close(trade_id)
     context = {
         'pubticker':_trader.pubticker,
-        'trades' : _trader.trades,
+        'orders' : _trader.orders,
         'period':_task.period,
         'tasks': Tasks.tasks,
         'task_id': task_id,

@@ -3,7 +3,7 @@ import brokers.bitfinex.messenger as bf
 import models as db 
 import time
 import datetime
-import pytz
+
 
 class Pubticker(object):
    def __init__(self, mid=None, bid=None, ask=None,last_price=None,low=None,high=None,volume=None,timestamp=None):

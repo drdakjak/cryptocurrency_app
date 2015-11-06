@@ -8,7 +8,7 @@
             {% csrf_token %}
         <input type="submit" value="Ukončit úlohu" />
         </form>
-         <form action="{% url 'manager:trade_manager' task.task_id %}" method="post">
+         <form action="{% url 'manager:order_manager' task.task_id %}" method="post">
             {% csrf_token %}
         <input type="submit" value="Přejít" />
         </form>
@@ -193,6 +193,6 @@ function update_data(data_json) {
     <input type="submit" value="Prodej" />
 </form>
 
-{% for key, trade in trades.items %}
-             <li>{{ trade }}<form action="{% url 'manager:close' task_id key %}" method="post">{% csrf_token %}<input type="submit" value="Zavřít" /></form></li>
+{% for key, order in orders.items %}
+             <li>{{ order }}<form action="{% url 'manager:close' task_id key %}" method="post">{% csrf_token %}<input type="submit" value="Zavřít" /></form></li>
 {% endfor %}
