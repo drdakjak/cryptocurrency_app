@@ -8,14 +8,7 @@ import hmac
 
 
 class Authentication:
-    # Your API key is:
-    #     WU3fL2YNNChbf2EfUtGMQCPxyUHqaIn2MF0de4Yyki8
 
-    # Your API key secret is:
-    #     MhOjdNX3SL5QPWNDoEVIewsjKcPPBPEOa2mCrwbmkK9
-    api_key = "WU3fL2YNNChbf2EfUtGMQCPxyUHqaIn2MF0de4Yyki8"
-    api_secret = "MhOjdNX3SL5QPWNDoEVIewsjKcPPBPEOa2mCrwbmkK9"
-    url = 'https://api.bitfinex.com/v1'
 
 class Order:
     state = None
